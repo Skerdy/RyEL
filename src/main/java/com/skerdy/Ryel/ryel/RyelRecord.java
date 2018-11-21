@@ -2,7 +2,7 @@ package com.skerdy.Ryel.ryel;
 
 import java.util.List;
 
-public class RyelRecord {
+public class RyelRecord{
 
     private Integer level;
     private Integer index;
@@ -10,8 +10,26 @@ public class RyelRecord {
     private String expression ="";
     private boolean atomic;
     private RyelOperator operator;
+    private Integer id;
+    private Integer parentId;
+
+    // after first processing
 
 
+
+
+    public RyelRecord(Integer level, Integer index, Integer id, Integer parentId) {
+        this.level = level;
+        this.index = index;
+        this.id = id;
+        this.parentId = parentId;
+    }
+
+    public RyelRecord(Integer level, Integer index, Integer id) {
+        this.level = level;
+        this.index = index;
+        this.id = id;
+    }
 
     public RyelRecord(Integer level, Integer index) {
         this.level = level;
@@ -73,6 +91,15 @@ public class RyelRecord {
         this.index = index;
     }
 
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "RyelRecord{" +
@@ -82,6 +109,31 @@ public class RyelRecord {
                 ", expression='" + expression + '\'' +
                 ", atomic=" + atomic +
                 ", operator=" + operator +
+                ", id=" + id +
+                ", parentId=" + parentId +
                 '}';
+    }
+
+
+
+
+    public void printNice(){
+        System.out.println(toString());
+        for(RyelRecord record : records){
+            System.out.println(records);
+            record.printNice();
+        }
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public boolean isRoot(){
+        return id.equals(0);
     }
 }

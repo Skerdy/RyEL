@@ -2,6 +2,7 @@ package com.skerdy.Ryel;
 
 import com.skerdy.Ryel.ryel.RyelParser;
 import com.skerdy.Ryel.ryel.RyelRecord;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,7 +29,13 @@ public class RyelApplication {
 			System.out.println(ryelRecord.toString());
 		}
 		System.out.println("");
-		System.out.println("ROOT RECORD : " + ryelParser.getRootRecord(test));
-		System.out.println("");
+		//System.out.println("ROOT RECORD : " + ryelParser.getRootRecord(test));
+		//ryelParser.getRootRecord(test).printNice();
+		JSONObject object = new JSONObject();
+		object.put("key", "skerdi");
+
+		System.out.println("ROOT RYEL" +  ryelParser.getRootMongoRyel(object));
+
+		System.out.println("QUERY : " +ryelParser.getRootMongoRyel(object).getQuery().toString() );
 	}
 }
