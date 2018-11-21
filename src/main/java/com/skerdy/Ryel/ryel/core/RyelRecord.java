@@ -1,4 +1,4 @@
-package com.skerdy.Ryel.ryel;
+package com.skerdy.Ryel.ryel.core;
 
 import java.util.List;
 
@@ -14,9 +14,6 @@ public class RyelRecord{
     private Integer parentId;
 
     // after first processing
-
-
-
 
     public RyelRecord(Integer level, Integer index, Integer id, Integer parentId) {
         this.level = level;

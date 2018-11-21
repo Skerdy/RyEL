@@ -1,4 +1,4 @@
-package com.skerdy.Ryel.ryel;
+package com.skerdy.Ryel.ryel.core;
 
 public enum RyelOperator {
     AND('&'),OR('|');

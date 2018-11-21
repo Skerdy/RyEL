@@ -1,14 +1,9 @@
-package com.skerdy.Ryel.ryel;
+package com.skerdy.Ryel.ryel.core;
 
-import org.json.simple.JSONObject;
+import com.skerdy.Ryel.ryel.core.RyelOperator;
 
-import java.util.List;
-
-public abstract class Ryel<T,V> {
-
-    protected T criteria;
+ public abstract class Ryel {
     protected RyelOperator operator;
-    protected List<Ryel<T,V>>  ryelList;
     protected boolean atomic;
     protected boolean root;
     private String expression;
@@ -17,22 +12,7 @@ public abstract class Ryel<T,V> {
     public Ryel(RyelOperator operator) {
         this.operator = operator;
         this.root = false;
-    }
-
-    public abstract void buildCriteria(JSONObject payload);
-
-    public abstract V getQuery();
-
-    public int getChildsNumber(){
-        return ryelList.size();
-    }
-
-    public T getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(T criteria) {
-        this.criteria = criteria;
+        this.atomic = true;
     }
 
     public RyelOperator getOperator() {
@@ -41,14 +21,6 @@ public abstract class Ryel<T,V> {
 
     public void setOperator(RyelOperator operator) {
         this.operator = operator;
-    }
-
-    public List<Ryel<T,V>> getRyelList() {
-        return ryelList;
-    }
-
-    public void setRyelList(List<Ryel<T,V>> ryelList) {
-        this.ryelList = ryelList;
     }
 
     public boolean isAtomic() {

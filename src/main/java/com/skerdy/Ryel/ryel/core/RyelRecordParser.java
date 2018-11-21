@@ -1,13 +1,17 @@
-package com.skerdy.Ryel.ryel;
+package com.skerdy.Ryel.ryel.core;
 
-import com.skerdy.Ryel.MongoRyel;
+import com.skerdy.Ryel.ryel.core.Ryel;
+import com.skerdy.Ryel.ryel.core.RyelMapper;
+import com.skerdy.Ryel.ryel.core.RyelOperator;
+import com.skerdy.Ryel.ryel.core.RyelRecord;
+import com.skerdy.Ryel.ryel.mongodb.MongoRyel;
 import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
 
-public abstract class AbstractRyelParser<E extends Ryel<Criteria,Query>> {
+public abstract class RyelRecordParser<E extends Ryel> {
 
     private final char OPENING_BRACKET = '{';
     private final char CLOSING_BRACKET = '}';
@@ -38,11 +42,24 @@ public abstract class AbstractRyelParser<E extends Ryel<Criteria,Query>> {
 
     protected List<E> ryels;
 
-    public AbstractRyelParser() {
+    public RyelRecordParser() {
         initParser();
     }
 
-    protected abstract void calculate(String query, JSONObject jsonObject);
+    // abstract methods
+    protected abstract E convert(RyelRecord record, JSONObject jsonObject);
+
+    protected abstract List<E> getChildrensForRecord(RyelRecord ryelRecord);
+
+    public  void calculate(String query, JSONObject jsonObject){
+        parse(query);
+        int queueSize = queue.size();
+        for (int i = 0; i < queueSize; i++) {
+            ryels.add(convert(queue.remove(), jsonObject));
+        }
+        findRootRyel(query,jsonObject);
+    }
+
 
     public List<RyelRecord> parse(String queryString) {
         resetParser();
@@ -166,7 +183,7 @@ public abstract class AbstractRyelParser<E extends Ryel<Criteria,Query>> {
     }
 
     //kthen bosh nese nuk gjen child records per ate record
-    private List<RyelRecord> getChildrenRecords(RyelRecord ryelRecord) {
+    protected List<RyelRecord> getChildrenRecords(RyelRecord ryelRecord) {
         List<RyelRecord> records = new ArrayList<>();
         if (ryelRecord == null) {
             return records;
@@ -190,23 +207,16 @@ public abstract class AbstractRyelParser<E extends Ryel<Criteria,Query>> {
         return null;
      }
 
-
-    protected abstract E convert(RyelRecord record, JSONObject jsonObject);
-
-
-
-    protected List<E> getRyelList(RyelRecord ryelRecord){
-        List<E> result = new ArrayList<>();
-        for(RyelRecord record : getChildrenRecords(ryelRecord)){
-            for( E ryel : ryels){
-                if(ryel.getRyelRecordId().equals(record.getId())){
-                    result.add(ryel);
-                }
+    public E findRootRyel(String query, JSONObject jsonObject){
+        E result = null;
+        for(E ryel : ryels){
+            if(ryel.getRyelRecordId().equals(0)){
+                root = ryel;
+                return ryel;
             }
         }
         return result;
     }
-
 
     public Queue<RyelRecord> getQueue() {
         return queue;
@@ -214,5 +224,21 @@ public abstract class AbstractRyelParser<E extends Ryel<Criteria,Query>> {
 
     public RyelRecord getRootRecord() {
         return rootRecord;
+    }
+
+    public E getRoot() {
+        return root;
+    }
+
+    public void setRoot(E root) {
+        this.root = root;
+    }
+
+    public List<E> getRyels() {
+        return ryels;
+    }
+
+    public void setRyels(List<E> ryels) {
+        this.ryels = ryels;
     }
 }

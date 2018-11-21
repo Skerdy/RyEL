@@ -1,6 +1,10 @@
-package com.skerdy.Ryel.ryel;
+package com.skerdy.Ryel.ryel.deprecated;
 
-import com.skerdy.Ryel.MongoRyel;
+import com.skerdy.Ryel.ryel.core.Ryel;
+import com.skerdy.Ryel.ryel.core.RyelMapper;
+import com.skerdy.Ryel.ryel.core.RyelOperator;
+import com.skerdy.Ryel.ryel.core.RyelRecord;
+import com.skerdy.Ryel.ryel.mongodb.MongoRyel;
 import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -162,7 +166,7 @@ public class RyelParser {
 
         int size = queue.size();
         for(int i=0; i<size; i++){
-            mongoRyels.add(convert(queue.remove(), jsonObject));
+          //  mongoRyels.add(convert(queue.remove(), jsonObject));
         }
 
         RyelRecord result = null;
@@ -184,10 +188,10 @@ public class RyelParser {
                return ryel;
             }
         }
-        return  result;
+        return result;
     }
 
-    private MongoRyel<Criteria,Query> convert(RyelRecord record, JSONObject jsonObject){
+ /*   private MongoRyel<Criteria,Query> convert(RyelRecord record, JSONObject jsonObject){
         MongoRyel<Criteria,Query> ryel = new MongoRyel<Criteria, Query>(record.getOperator());
         if(record.isAtomic()){
             ryel.setRyelList(new ArrayList<>());
@@ -201,9 +205,9 @@ public class RyelParser {
         ryel.setRyelRecordId(record.getId());
         ryel.buildCriteria(jsonObject);
         return ryel;
-    }
+    }*/
 
-    private List<Ryel<Criteria, Query>> getRyelList(RyelRecord ryelRecord){
+/*    private List<Ryel<Criteria, Query>> getRyelList(RyelRecord ryelRecord){
         List<Ryel<Criteria, Query> >result = new ArrayList<>();
         for(RyelRecord record : getChildRecords(ryelRecord)){
             for(MongoRyel  mongoRyel : mongoRyels){
@@ -213,7 +217,7 @@ public class RyelParser {
             }
         }
         return result;
-    }
+    }*/
 
     //kthen bosh nese nuk gjen child records per ate record
     private List<RyelRecord> getChildRecords(RyelRecord ryelRecord){
@@ -240,32 +244,8 @@ public class RyelParser {
         return null;
     }
 
-    private RyelRecord getRootRecordForMap(Map<RyelMapper, RyelRecord> map) {
-        List<RyelRecord> records = new ArrayList<>(map.values());
-        for (RyelRecord record : records) {
-            if (record.getLevel().equals(0)) {
-                return record;
-            }
-        }
-        return null;
-    }
 
-
-    private boolean levelHasMultipleIndexes(Integer level) {
-        Integer iterator = 0;
-        for (RyelRecord record : ryelRecords) {
-            if (record.getLevel().equals(level)) {
-                iterator = iterator + 1;
-            }
-        }
-        if (iterator > 1) {
-            return true;
-        }
-        return false;
-    }
-
-
-    private RyelRecord buildRecordRecursively(RyelRecord ryelRecord, int levels, int index, int level) {
+    /*private RyelRecord buildRecordRecursively(RyelRecord ryelRecord, int levels, int index, int level) {
         Integer maxIndexForLevel = calculateMaxIndexForLevel(level);
         // kushti i ndalimit
         if (ryelRecord.getLevel().equals(levels) || ryelRecord.isAtomic() || (ryelRecord.getIndex().equals(maxIndexForLevel) && !ryelRecord.getLevel().equals(0))) {
@@ -273,7 +253,7 @@ public class RyelParser {
         }
         //ryelRecord.setRecords(getRecordsForLevel(ryelRecord.getLevel()+1));
         return buildRecordRecursively(findRecordWithPosition(++level, ++index), levels, index, level).setRecords(getRecordsForLevel(level));
-    }
+    }*/
 
     private int calculateLevels() {
         int result = 0;

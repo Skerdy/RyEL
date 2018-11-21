@@ -1,6 +1,7 @@
-package com.skerdy.Ryel.ryel.generators;
+package com.skerdy.Ryel.ryel.mongodb;
 
-import com.skerdy.Ryel.ryel.RyelPair;
+import com.skerdy.Ryel.ryel.core.RyelPair;
+import com.skerdy.Ryel.ryel.generators.CriteriaGenerator;
 import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.query.Criteria;
 
