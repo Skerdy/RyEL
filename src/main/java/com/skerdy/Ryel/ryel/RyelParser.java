@@ -18,16 +18,9 @@ public class RyelParser {
     private Integer currentLevel;
     private Integer currentIndex;
 
-    private Map<Integer, Integer> currentLevelIndex;
-
     private RyelRecord currentRecord;
 
-    // level -> index -> record
-    private Map<Integer, Map<Integer, RyelRecord>> createdRecords;
-
-    private Map<RyelMapper, RyelRecord> recordMap;
-
-    private Map<RyelMapper, RyelRecord> eligibleRecordsToWrite;
+    private Map<RyelMapper, RyelRecord> mappedRecords;
 
     private List<RyelRecord> ryelRecords;
 
@@ -37,7 +30,7 @@ public class RyelParser {
 
     private Stack<RyelRecord> eligibleStack;
 
-    private  Queue<RyelRecord> queue;
+    private Queue<RyelRecord> queue;
 
     private List<MongoRyel<Criteria, Query>> mongoRyels;
 
@@ -47,10 +40,7 @@ public class RyelParser {
     }
 
     public List<RyelRecord> getRecords(String queryString) {
-        createdRecords = new HashMap<>();
-        recordMap = new HashMap<>();
-        eligibleRecordsToWrite = new HashMap<>();
-        currentLevelIndex = new HashMap<>();
+        mappedRecords = new HashMap<>();
         generatedIds = new ArrayList<>();
         eligibleStack = new Stack<>();
         mongoRyels = new ArrayList<>();
@@ -72,9 +62,7 @@ public class RyelParser {
 
                 eligibleStack.push(currentRecord);
 
-                recordMap.put(currentMapper, currentRecord);
-
-                eligibleRecordsToWrite.put(currentMapper, currentRecord);
+                mappedRecords.put(currentMapper, currentRecord);
 
                 //validateEligibleRecords(currentLevel, currentIndex);
                 writeAppendingChar(currentChar);
@@ -98,7 +86,7 @@ public class RyelParser {
             }
         }
 
-        this.ryelRecords = new ArrayList<>(recordMap.values());
+        this.ryelRecords = new ArrayList<>(mappedRecords.values());
         validateAtomic();
         return this.ryelRecords;
     }
@@ -106,28 +94,26 @@ public class RyelParser {
     // kthen nje ryel mapper te ri per cilindo level
     private RyelMapper next(Integer level) {
 
-        if (this.recordMap.isEmpty()) {
-            currentLevelIndex.put(0, 0);
+        if (this.mappedRecords.isEmpty()) {
             return new RyelMapper(0, 0);
         }
 
         Integer maxIndex = -1;
-        for (RyelMapper mapper : this.recordMap.keySet()) {
+        for (RyelMapper mapper : this.mappedRecords.keySet()) {
             if (mapper.getLevel().equals(level)) {
-                RyelRecord record = recordMap.get(mapper);
+                RyelRecord record = mappedRecords.get(mapper);
                 if (maxIndex < record.getIndex()) {
                     maxIndex = record.getIndex();
                 }
             }
         }
         currentIndex = maxIndex + 1;
-        currentLevelIndex.put(level, currentIndex);
         return new RyelMapper(level, currentIndex);
     }
 
     private void setOperator(Integer id, RyelOperator operator) {
-            for (RyelMapper ryelMapper : this.recordMap.keySet()) {
-                RyelRecord record = this.recordMap.get(ryelMapper);
+            for (RyelMapper ryelMapper : this.mappedRecords.keySet()) {
+                RyelRecord record = this.mappedRecords.get(ryelMapper);
                 if (record.getId().equals(id)) {
                     record.setOperator(operator);
                 }
@@ -157,7 +143,7 @@ public class RyelParser {
     private RyelRecord buildRecordIteratively(JSONObject jsonObject) {
         // rekorded e mbushura
         List<RyelRecord> records = new ArrayList<>();
-        queue= new LinkedList<>();
+        queue = new LinkedList<>();
 
         for(int i = generatedIds.size()-1; i >= 0 ; i--){
             RyelRecord record = findRecordById(i);
@@ -173,11 +159,10 @@ public class RyelParser {
                 records.add(record);
             }
         }
+
         int size = queue.size();
         for(int i=0; i<size; i++){
-
             mongoRyels.add(convert(queue.remove(), jsonObject));
-
         }
 
         RyelRecord result = null;

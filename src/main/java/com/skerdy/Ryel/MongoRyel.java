@@ -1,26 +1,25 @@
 package com.skerdy.Ryel;
 
 
-import com.skerdy.Ryel.ryel.MongoCriteriaGenerator;
+import com.skerdy.Ryel.ryel.generators.MongoCriteriaGenerator;
 import com.skerdy.Ryel.ryel.Ryel;
 import com.skerdy.Ryel.ryel.RyelOperator;
 import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-public class MongoRyel<C, Q> extends Ryel<Criteria, Query> {
-
+public class MongoRyel extends Ryel<Criteria, Query> {
 
     private MongoCriteriaGenerator criteriaGenerator;
+
+    private MongoRyel
 
     public MongoRyel(RyelOperator operator) {
         super(operator);
         criteriaGenerator = new MongoCriteriaGenerator();
     }
 
-
     //metoda qe kthen kriterian per childed
-
     @Override
     public void buildCriteria(JSONObject payload) {
         if(ryelList !=null && ryelList.isEmpty()){

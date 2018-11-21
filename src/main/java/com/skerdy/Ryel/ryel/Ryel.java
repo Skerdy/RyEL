@@ -19,7 +19,6 @@ public abstract class Ryel<T,V> {
         this.root = false;
     }
 
-
     public abstract void buildCriteria(JSONObject payload);
 
     public abstract V getQuery();
@@ -27,7 +26,6 @@ public abstract class Ryel<T,V> {
     public int getChildsNumber(){
         return ryelList.size();
     }
-
 
     public T getCriteria() {
         return criteria;

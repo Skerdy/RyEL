@@ -1,4 +1,4 @@
-package com.skerdy.Ryel.ryel;
+package com.skerdy.Ryel.ryel.generators;
 
 import org.json.simple.JSONObject;
 

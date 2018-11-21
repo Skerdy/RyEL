@@ -1,10 +1,8 @@
-package com.skerdy.Ryel.ryel;
+package com.skerdy.Ryel.ryel.generators;
 
+import com.skerdy.Ryel.ryel.RyelPair;
 import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.query.Criteria;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MongoCriteriaGenerator implements CriteriaGenerator<Criteria,String> {
 
